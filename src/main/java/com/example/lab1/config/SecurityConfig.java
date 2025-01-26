@@ -18,14 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Убираем поле userService — оно нам не нужно как final
-    // private final UserService userService;
-
-    // Удаляем конструктор, потому что в нём мы требовали UserService
-    // public SecurityConfig(UserService userService) {
-    //     this.userService = userService;
-    // }
-
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
         return username -> {
