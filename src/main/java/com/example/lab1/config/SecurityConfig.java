@@ -18,8 +18,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserService userService;
+
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
+    }
+
     @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
+    public UserDetailsService userDetailsService() {
         return username -> {
             var user = userService.findByUsername(username);
             if (user == null) {
@@ -35,13 +41,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
-    ) {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(userDetailsService());
+        provider.setPasswordEncoder(passwordEncoder()); // BCrypt
         return provider;
     }
 
@@ -54,18 +57,18 @@ public class SecurityConfig {
                             .permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .formLogin(login -> login
-                        .loginPage("/login").permitAll()
-                        .defaultSuccessUrl("/", true)
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout").permitAll()
-                        .logoutSuccessUrl("/login?logout")
-                )
+                .formLogin(login -> {
+                    login.loginPage("/login").permitAll()
+                            .defaultSuccessUrl("/", true);
+                })
+                .logout(logout -> {
+                    logout.logoutUrl("/logout").permitAll()
+                            .logoutSuccessUrl("/login?logout");
+                })
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
-        // Разрешаем доступ к H2-консоли
+
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();

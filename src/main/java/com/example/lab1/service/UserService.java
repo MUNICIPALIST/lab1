@@ -18,7 +18,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Transactional // Добавьте эту аннотацию
+    @Transactional 
     public User register(String username, String rawPassword) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("User already in db");
@@ -42,7 +42,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    @Transactional // Для операций сохранения добавьте @Transactional
+    @Transactional 
     public User saveUser(User user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -50,7 +50,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional // Для операций удаления
+    @Transactional 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

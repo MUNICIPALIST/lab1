@@ -21,7 +21,6 @@ public class User {
 
     private String role;
 
-    // Конструкторы, геттеры и сеттеры
     public User() {}
 
     public User(String username, String password, String role) {
@@ -30,7 +29,6 @@ public class User {
         this.role = role;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }

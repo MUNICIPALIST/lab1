@@ -16,19 +16,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Список
     @GetMapping
     public String listUsers(Model model) {
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
-        return "users"; // users.html
+        return "users"; 
     }
 
-    // Форма создания
     @GetMapping("/new")
     public String newUserForm(Model model) {
         model.addAttribute("user", new User());
-        return "user-form"; // user-form.html
+        return "user-form"; 
     }
 
     @PostMapping
@@ -37,7 +35,6 @@ public class UserController {
         return "redirect:/users";
     }
 
-    // Форма редактирования
     @GetMapping("/{id}/edit")
     public String editUserForm(@PathVariable Long id, Model model) {
         User user = userService.getUserById(id);
@@ -50,14 +47,13 @@ public class UserController {
         User existing = userService.getUserById(id);
         existing.setUsername(updatedUser.getUsername());
         if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-            existing.setPassword(updatedUser.getPassword()); // зашифруется в сервисе
+            existing.setPassword(updatedUser.getPassword()); 
         }
         existing.setRole(updatedUser.getRole());
         userService.saveUser(existing);
         return "redirect:/users";
     }
 
-    // Удаление
     @GetMapping("/{id}/delete")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
